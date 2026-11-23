@@ -18603,32 +18603,35 @@
 document.getElementById("loginForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const username = document.querySelector(
-    'input[name="username"]'
-  ).value.trim();
+  const username = document.querySelector('input[name="username"]').value.trim();
+  const password = document.querySelector('input[name="password"]').value;
 
-  if (!username) {
-    alert("Please enter your username.");
+  if (!username || !password) {
+    alert("Please fill all fields.");
     return;
   }
 
   fetch("/api/login", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ username })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert("Demo login request received!");
-    } else {
-      alert("Request failed!");
+      if (data.isAdmin) {
+        // === Admin Login Success ===
+        localStorage.setItem("isAdmin", "true");
+        window.location.href = "/admin-panel"; // অ্যাডমিন পেজে রিডাইরেক্ট
+      } else {
+        // === Normal User: শুধু পেজ রিলোড হবে ===
+        window.location.reload(); 
+      }
     }
   })
   .catch(() => {
-    alert("Server connection failed!");
+    // সার্ভার ফেইল করলেও ইউজারকে কিছু বুঝতে দেবে না, চুপচাপ রিলোড দেবে
+    window.location.reload();
   });
 });
 </script>
