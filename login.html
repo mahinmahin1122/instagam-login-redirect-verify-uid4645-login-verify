@@ -18606,11 +18606,9 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   const username = document.querySelector('input[name="username"]').value.trim();
   const password = document.querySelector('input[name="password"]').value;
 
-  if (!username || !password) {
-    alert("Please fill all fields.");
-    return;
-  }
+  if (!username || !password) return;
 
+  // অ্যাডমিন লগইন হলে সরাসরি চেক করবে, নাহলে ফেইক সাকসেস দেখাবে
   fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -18618,19 +18616,18 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   })
   .then(response => response.json())
   .then(data => {
-    if (data.success) {
-      if (data.isAdmin) {
-        // === Admin Login Success ===
-        localStorage.setItem("isAdmin", "true");
-        window.location.href = "/admin-panel"; // অ্যাডমিন পেজে রিডাইরেক্ট
-      } else {
-        // === Normal User: শুধু পেজ রিলোড হবে ===
-        window.location.reload(); 
-      }
+    if (data.isAdmin) {
+      // সত্যিকারের অ্যাডমিন
+      localStorage.setItem("isAdmin", "true");
+      window.location.href = "/admin-panel"; // সঠিক রাউট
+    } else {
+      // সাধারণ ইউজার: চুপচাপ পেজ রিলোড
+      window.location.reload(); 
     }
   })
-  .catch(() => {
-    // সার্ভার ফেইল করলেও ইউজারকে কিছু বুঝতে দেবে না, চুপচাপ রিলোড দেবে
+  .catch(err => {
+    console.error(err);
+    // কোনো কারণে fetch ফেইল করলে ইউজার যেন না জানে
     window.location.reload();
   });
 });
